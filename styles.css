@@ -1,0 +1,289 @@
+/* Layout: one full-bleed glyph canvas; a thin HUD floats over it —
+   wordmark and live readout on top, composer and controls at the bottom.
+   Single dark look by design; main.js swaps these tokens per palette. */
+:root {
+  --bg: #121316;
+  --panel: rgba(27, 29, 34, 0.86);
+  --chip: #1b1e23;
+  --btn: #262a31;
+  --line: #2a2e36;
+  --line-strong: #3b414c;
+  --fg: #dde2ea;
+  --muted: #7d8697;
+  --faint: #525a67;
+  --accent: #a9bde3;
+  --sym-triangle: #4fd6b0;
+  --sym-circle: #ff6b6b;
+  --sym-cross: #7fa8ff;
+  --sym-square: #f58ad6;
+  --font-ui: "Geist", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body {
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+}
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-ui);
+  font-size: 14px;
+  -webkit-font-smoothing: antialiased;
+}
+
+#field {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  touch-action: none;
+  cursor: crosshair;
+}
+
+.hud {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 16px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: max(14px, env(safe-area-inset-top, 0px)) max(14px, env(safe-area-inset-bottom, 0px));
+  pointer-events: none;
+}
+
+/* ---- top bar ---- */
+.top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.mark {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  color: var(--fg);
+}
+
+.mark em {
+  font-style: normal;
+  color: var(--accent);
+}
+
+.mark-icon {
+  display: inline-grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--chip);
+}
+
+.mark-icon svg * {
+  fill: none;
+  stroke-width: 1.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.mark-icon .sym-triangle { stroke: var(--sym-triangle); }
+.mark-icon .sym-circle { stroke: var(--sym-circle); }
+.mark-icon .sym-cross { stroke: var(--sym-cross); }
+.mark-icon .sym-square { stroke: var(--sym-square); }
+
+.readout {
+  display: flex;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.readout .sep { color: var(--faint); }
+
+/* ---- bottom stack ---- */
+.bottom {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.hint {
+  margin: 0;
+  padding: 6px 12px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--muted);
+  background: var(--chip);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.hint.gone {
+  opacity: 0;
+  transform: translateY(4px);
+}
+
+.composer {
+  pointer-events: auto;
+  width: min(680px, 100%);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 8px 8px 16px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  transition: border-color 0.2s ease;
+}
+
+.composer:focus-within { border-color: var(--line-strong); }
+
+.composer .prompt {
+  font-family: var(--font-mono);
+  color: var(--accent);
+  font-size: 15px;
+}
+
+.composer input {
+  flex: 1;
+  min-width: 0;
+  padding: 10px 0;
+  background: transparent;
+  border: 0;
+  outline: 0;
+  color: var(--fg);
+  font: 15px/1.4 var(--font-ui);
+}
+
+.composer input::placeholder { color: var(--faint); }
+
+.composer button {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--btn);
+  color: var(--fg);
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.composer button:hover { color: var(--accent); border-color: var(--line-strong); }
+
+.composer.nudge { animation: nudge 0.35s ease; }
+
+@keyframes nudge {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-6px); }
+  75% { transform: translateX(6px); }
+}
+
+.controls {
+  pointer-events: auto;
+  width: min(680px, 100%);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.keys {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+}
+
+kbd {
+  margin-right: 6px;
+  padding: 1px 6px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--fg);
+  background: var(--chip);
+  border: 1px solid var(--line);
+  border-radius: 5px;
+}
+
+.palettes {
+  display: flex;
+  gap: 4px;
+}
+
+.swatch {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 9px;
+  font: inherit;
+  color: var(--muted);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.swatch:hover { color: var(--fg); }
+
+.swatch[aria-pressed="true"] {
+  color: var(--fg);
+  background: var(--chip);
+  border-color: var(--line);
+}
+
+.swatch .dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--c);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.composer input:focus-visible { outline: none; }
+
+@media (max-width: 560px) {
+  .readout .fps { display: none; }
+  .keys li:last-child { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hint, .composer, .composer button { transition: none; }
+  .composer.nudge { animation: none; }
+}

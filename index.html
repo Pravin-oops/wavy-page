@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Glyphtide</title>
+  <meta name="description" content="A field of triangle, circle, cross and square symbols around a rotating planet. Click to send waves through it.">
+  <meta name="theme-color" content="#121316">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;800&family=Geist+Mono:wght@400;500&display=swap">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <canvas id="field" role="img" aria-label="A field of triangle, circle, cross and square symbols forming a slowly rotating planet. Clicking sends waves of coloured light through the symbols."></canvas>
+
+  <div class="hud">
+    <header class="top">
+      <div class="mark">
+        <span class="mark-icon" aria-hidden="true">
+          <svg viewBox="0 0 20 20" width="16" height="16">
+            <path class="sym-triangle" d="M10 1.6 12.4 5.8H7.6Z"/>
+            <circle class="sym-circle" cx="16" cy="10" r="2.3"/>
+            <path class="sym-cross" d="M8.2 12.2l3.6 3.6M11.8 12.2l-3.6 3.6"/>
+            <rect class="sym-square" x="1.8" y="7.9" width="4.2" height="4.2"/>
+          </svg>
+        </span>
+        <span>glyph<em>tide</em></span>
+      </div>
+      <div class="readout" aria-hidden="true">
+        <span id="ro-grid">— × —</span>
+        <span class="sep">·</span>
+        <span id="ro-waves">0 waves</span>
+        <span class="sep fps">·</span>
+        <span id="ro-fps" class="fps">— fps</span>
+        <span class="sep fps">·</span>
+        <span id="ro-ms" class="fps">— ms</span>
+      </div>
+    </header>
+
+    <div class="bottom">
+      <p class="hint" id="hint">Click anywhere to send a wave</p>
+
+      <form class="composer" id="composer" autocomplete="off">
+        <span class="prompt" aria-hidden="true">&gt;</span>
+        <input id="word" name="word" type="text" maxlength="24" spellcheck="false"
+               placeholder="Write a word into the field"
+               aria-label="Word to write into the field">
+        <button type="submit" id="send" aria-label="Write it into the field">
+          <svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true">
+            <path d="M15 5v5a2 2 0 0 1-2 2H5m0 0 3-3m-3 3 3 3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </form>
+
+      <div class="controls">
+        <ul class="keys">
+          <li><kbd>click</kbd>wave</li>
+          <li><kbd>drag</kbd>stir</li>
+          <li><kbd>space</kbd>pulse</li>
+          <li><kbd>enter</kbd>write</li>
+        </ul>
+        <div class="palettes" id="palettes" aria-label="Palette">
+          <button type="button" class="swatch" data-palette="slate" aria-pressed="true" style="--c:#a9bde3"><span class="dot"></span>Slate</button>
+          <button type="button" class="swatch" data-palette="ember" aria-pressed="false" style="--c:#e3a877"><span class="dot"></span>Ember</button>
+          <button type="button" class="swatch" data-palette="moss" aria-pressed="false" style="--c:#94cba5"><span class="dot"></span>Moss</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="main.js"></script>
+</body>
+</html>
